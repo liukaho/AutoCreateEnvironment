@@ -1,0 +1,11 @@
+server {
+    listen   80 default;
+    server_name _;
+    rewrite ^(.*) https://$server_name$1 permanent;
+
+
+    add_header X-Frame-Options SAMEORIGIN;
+    add_header X-Content-Type-Options nosniff;
+    add_header Cache-Control no-cache;
+    add_header X-XSS-Protection 1;
+}

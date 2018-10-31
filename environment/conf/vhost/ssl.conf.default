@@ -1,0 +1,41 @@
+server {
+    listen   443 default ssl ;
+    ssl on;
+    ssl_certificate ssl/xxx.crt;
+    ssl_certificate_key ssl/xxx.key;
+    server_name xxx;
+
+    access_log  /opt/log/access.log;
+    error_log /opt/log/error.log;
+    root /opt/code/xxx/public;
+    index index.php index.html;
+    include enable-php.conf;
+
+
+    add_header X-Frame-Options SAMEORIGIN;
+    add_header X-Content-Type-Options nosniff;
+    add_header Cache-Control no-cache;
+    add_header X-XSS-Protection 1;
+    location / {
+          try_files $uri $uri/ /index.php?$query_string;
+    }
+    location ~ /\.
+    {
+        deny all;
+    }
+    location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$
+    {
+        expires      30d;
+    }
+    
+    location ~ .*web\.config$
+    {
+        return 404;
+    }
+
+    location ~ .*\.(js|css)?$
+    {
+        expires      12h;
+    }
+
+}

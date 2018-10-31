@@ -1,0 +1,53 @@
+version: "2"
+
+services:
+  nginx:
+    image: "nginx"
+    ports:
+      - "80:80"
+      - "443:443"
+    links:
+      - php
+    privileged: true
+    volumes: 
+      - ${NGINX_CONFIG}:/etc/nginx/
+      - ${NGINX_LOG}:/opt/log
+      - ${CODE_PATH}:/opt/code
+    networks:
+      - lnmp
+    
+  php:
+    image: "liukaho/php:${PHP_FPM_TAG}"
+    ports:
+      - "9000:9000"
+    privileged: true
+    links:
+      - redis
+      - mysql
+    volumes:
+      - ${CODE_PATH}:/opt/code
+      - ${SUPERVISOR_PATH}:/etc/supervisor/conf.d
+    networks:
+      - lnmp
+  
+  mysql:
+    image: mysql
+    ports:
+      - "3306:3306"
+    volumes:
+      - ${DB_PATH}:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    networks:
+      - lnmp
+  
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - lnmp
+
+networks:
+  lnmp:
+    driver: bridge
