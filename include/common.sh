@@ -39,5 +39,4 @@ Get_Dist_Name()
     else
         DISTRO='unknow'
     fi
-    Get_OS_Bit
 }
